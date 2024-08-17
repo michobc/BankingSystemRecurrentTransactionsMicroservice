@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "NhULnCZhz4YdRza8lSsuI+m7VovXihW6Ri5Y8GO0638=",
+  "Source": "BankingSystemTransactionMicroservice",
+  "BasePath": "_content/BankingSystemTransactionMicroservice",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
