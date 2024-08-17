@@ -1,6 +1,8 @@
 using BankingSystemTransactionMicroservice.Consumer;
 using BankingSystemTransactionMicroservice.Models;
 using BankingSystemTransactionMicroservice.Services;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,16 @@ builder.Services.AddDbContext<BankingSystemMicroContext>(options =>
 
 // Register RabbitMQ service
 builder.Services.AddSingleton<RabbitMqService>();
+builder.Services.AddScoped<CalculatNextTransaction>();
+builder.Services.AddScoped<RecurrentTransactionProcess>();
 builder.Services.AddHostedService<RabbitMqConsumerService>();
+
+// Add Hangfire services
+builder.Services.AddHangfire(configuration =>
+{
+    configuration.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddHangfireServer();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -34,5 +45,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Use Hangfire Dashboard for monitoring (optional)
+app.UseHangfireDashboard();
+
+// Schedule the recurring job
+RecurringJob.AddOrUpdate<RecurrentTransactionProcess>(
+    handler => handler.ProcessRecurrentTransactions(), 
+    Cron.Daily);
 
 app.Run();
