@@ -16,9 +16,12 @@ builder.Services.AddDbContext<BankingSystemMicroContext>(options =>
 
 // Register RabbitMQ service
 builder.Services.AddSingleton<RabbitMqService>();
-builder.Services.AddScoped<CalculatNextTransaction>();
-builder.Services.AddScoped<RecurrentTransactionProcess>();
 builder.Services.AddHostedService<RabbitMqConsumerService>();
+builder.Services.AddSingleton<RabbitMqServiceEvent>();
+
+builder.Services.AddScoped<RecurrentTransactionProcess>();
+
+builder.Services.AddScoped<CalculatNextTransaction>();
 
 // Add Hangfire services
 builder.Services.AddHangfire(configuration =>
